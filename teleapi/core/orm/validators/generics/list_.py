@@ -7,6 +7,10 @@ from teleapi.core.orm.validators import ValidationError
 class ListValidator(SizedValidator):
     def __init__(self, validator: 'Validateable', **kwargs) -> None:
         super().__init__(**kwargs)
+        
+        if not isinstance(validator, Validateable):
+            raise TypeError(f"'validator' of {self} must be of type 'Validateable', not {type(validator)} (got {validator})")
+
         self.validator = validator
 
     def validate(self, value: JsonValue) -> JsonValue:

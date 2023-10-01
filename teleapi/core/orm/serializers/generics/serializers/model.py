@@ -66,7 +66,8 @@ class ModelSerializerMeta(SerializerMeta):  # TODO: Переписать
             if not serializer_field:
                 if enable_warnings:
                     warnings.warn(
-                        f"Field {model_field} was declared in model, but it is not supported py ModelSerializer. Please, declare it manually")
+                        f"Field {model_field} was declared in model, but it is not supported py ModelSerializer. Please, declare it in {cls.__name__} manually"
+                    )
                 continue
 
             if not isinstance(serializer_field, type) and callable(serializer_field):

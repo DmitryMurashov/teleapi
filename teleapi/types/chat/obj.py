@@ -4,10 +4,14 @@ from typing import TYPE_CHECKING, Union, List
 
 from aiohttp import FormData
 
+from teleapi.core.exceptions.generics import ParameterConflictError, InvalidParameterError
 from teleapi.core.http.request import method_request
 from teleapi.core.http.request.api_method import APIMethod
 from teleapi.core.utils.collections import exclude_from_dict, clear_none_values
+from teleapi.core.utils.files import get_file
 from teleapi.enums.parse_mode import ParseMode
+from teleapi.generics.http.methods.chat import edit_invite_link, revoke_chat_invite_link
+from teleapi.generics.http.methods.messages import *
 from teleapi.types.chat.chat_action import ChatAction
 from teleapi.types.chat_invite_link import ChatInviteLink, ChatInviteLinkSerializer
 from teleapi.types.user import User
@@ -24,10 +28,7 @@ from ..input_media.sub_objects.video import InputMediaVideo
 from ..location import Location
 from ..menu_button import MenuButton, MenuButtonSerializer
 from ..message_entity import MessageEntity
-from teleapi.core.exceptions.generics import ParameterConflictError, InvalidParameterError
-from teleapi.core.utils.files import get_file
-from teleapi.generics.http.methods.chat import edit_invite_link, revoke_chat_invite_link
-from teleapi.generics.http.methods.messages import *
+from ..sticker import Sticker
 
 if TYPE_CHECKING:
     from teleapi.types.message.obj import Message
@@ -1427,6 +1428,7 @@ class Chat(ChatModel):
     async def send_location(self,
                             location: Location,
                             disable_notification: bool = None,
+                            message_thread_id: int = None,
                             protect_content: bool = None,
                             reply_to_message: Union[int, 'Message'] = None,
                             allow_sending_without_reply: bool = None,
@@ -1444,6 +1446,32 @@ class Chat(ChatModel):
         payload['chat_id'] = self.id
 
         return await send_location(**payload)
+
+    async def send_sticker(self,
+                           sticker: Union[Sticker, bytes, str],
+                           message_thread_id: int = None,
+                           emoji: str = None,
+                           disable_notification: bool = None,
+                           protect_content: bool = None,
+                           reply_to_message: Union[int, 'Message'] = None,
+                           allow_sending_without_reply: bool = None,
+                           reply_markup: Union[
+                               'InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply', dict] = None,
+                           view: 'BaseInlineView' = None
+                           ) -> 'Message':
+        """
+        Alias for the teleapi.generics.http.methods.messages.send.send_sticker
+        """
+
+        if isinstance(sticker, Sticker):
+            sticker = sticker.file_id
+
+        payload = exclude_from_dict(locals(), 'self', 'reply_to_message')
+        payload['reply_to_message_id'] = reply_to_message if isinstance(reply_to_message,
+                                                                        int) or reply_to_message is None else reply_to_message.id
+        payload['chat_id'] = self.id
+
+        return await send_sticker(**payload)
 
     async def copy_message(self,
                            to_chat: Union['Chat', int, str],

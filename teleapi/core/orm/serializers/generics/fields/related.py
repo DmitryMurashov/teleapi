@@ -9,6 +9,10 @@ from importlib import import_module
 class RelatedSerializerField(Validator, SerializerField):
     def __init__(self, serializable: Union[Serializable, str], **kwargs) -> None:
         super().__init__(**kwargs)
+
+        if not isinstance(serializable, (Serializable, str)):
+            raise TypeError(f"'serializable' of {self} must be of type 'Union[Serializable, str]', not {type(serializable)} (got {serializable})")
+
         self._serializable = serializable
 
     @property

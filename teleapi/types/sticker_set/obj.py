@@ -1,3 +1,4 @@
+import json
 import os
 import string
 from typing import Union, List
@@ -90,9 +91,11 @@ class StickerSet(StickerSetModel):
             raise InvalidParameterError("Sticker set title must be <= 64 characters long")
         elif not (1 <= len(stickers) <= 50):
             raise InvalidParameterError("Length of initial stickers list must be from 1 to 50")
+        elif isinstance(user, User) and user.is_bot:
+            raise InvalidParameterError("User is bot")
 
         form_data = make_form_data({
-            "user": user.id if isinstance(user, User) else user,
+            "user_id": user.id if isinstance(user, User) else user,
             "name": name,
             "title": title,
             "sticker_format": sticker_format.value,
@@ -113,9 +116,9 @@ class StickerSet(StickerSetModel):
                 InputStickerSerializer().serialize(obj=sticker, keep_none_fields=False)
             )
 
-        form_data.add_field("stickers", serialized_stickers)
+        form_data.add_field("stickers", json.dumps(serialized_stickers))
+        _, __ = await method_request("POST", APIMethod.CREATE_NEW_STICKER_SET, data=form_data)
 
-        _, __ = await method_request("POST", APIMethod.CREATE_STICKER_SET, data=form_data)
         return await StickerSet.get_sticker_set(name)
 
     async def add_sticker(self, user: Union[User, int], sticker: InputSticker, self_update: bool = False) -> bool:

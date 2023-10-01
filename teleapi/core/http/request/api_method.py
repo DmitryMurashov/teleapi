@@ -88,7 +88,7 @@ class APIMethod(Enum):
     GET_STICKER_SET = "getStickerSet"
     GET_CUSTOM_EMOJI_STICKERS = "getCustomEmojiStickers"
     UPLOAD_STICKER_FILE = "uploadStickerFile"
-    CREATE_STICKER_SET = "createNewStickerSet"
+    CREATE_NEW_STICKER_SET = "createNewStickerSet"
     ADD_STICKER_TO_SET = "addStickerToSet"
     SET_STICKER_POSITION_IN_SET = "setStickerPositionInSet"
     DELETE_STICKER_FROM_SET = "deleteStickerFromSet"

@@ -11,7 +11,7 @@ class StickerSetModel(Model):
     name: str = StringModelField()
     title: str = StringModelField()
     sticker_type: StickerType = RelatedModelField(StickerType)
-    stickers: List[Sticker] = ListModelField(Sticker)
+    stickers: List[Sticker] = ListModelField(RelatedModelField(Sticker))
     is_animated: bool = BooleanModelField(default=False)
     is_video: bool = BooleanModelField(default=False)
     thumbnail: Optional[PhotoSize] = RelatedModelField(PhotoSize, is_required=False)

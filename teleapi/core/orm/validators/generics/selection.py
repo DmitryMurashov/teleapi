@@ -6,6 +6,7 @@ from typing import Any, List
 class SelectionValidator(Validator):
     def __init__(self, variations: List[Any], **kwargs) -> None:
         super().__init__(**kwargs)
+
         self.variations = variations
 
     def validate(self, value: Any) -> Any:

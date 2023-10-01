@@ -33,6 +33,10 @@ class InputFileModel(Model, metaclass=_InputFileModelMeta):
             filename = default(self.filename, data_filename)
             if not filename:
                 raise InvalidParameterError(f"'filename' was not specified")
+
+            self.register_data(self.__file_field__, data, filename)
+        elif self.__get_file_field_data() is not None and self.__get_file_field_data().startswith("http"):
+            pass
         else:
             raise ValidationError(f"File data for {self} not specified")
 

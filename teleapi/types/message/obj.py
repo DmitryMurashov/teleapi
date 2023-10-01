@@ -13,8 +13,9 @@ from ..input_media.sub_objects.document import InputMediaDocument
 from ..input_media.sub_objects.photo import InputMediaPhoto
 from ..input_media.sub_objects.video import InputMediaVideo
 from ..location import Location
-from ..poll.sub_object import PollType
 from ..poll import Poll
+from ..poll.sub_object import PollType
+from ..sticker import Sticker
 from ...core.exceptions.generics import InvalidParameterError
 from ...core.utils.collections import exclude_from_dict
 from ...core.utils.syntax import default
@@ -254,8 +255,24 @@ class Message(MessageModel):
 
         return await self.chat.send_animation(**payload)
 
-    async def send_location(self,
-                            location: Location,
+    async def reply_location(self,
+                             location: Location,
+                             disable_notification: bool = None,
+                             protect_content: bool = None,
+                             allow_sending_without_reply: bool = None,
+                             reply_markup: Union[
+                                 'InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply', dict] = None,
+                             view: 'BaseInlineView' = None
+                             ) -> 'Message':
+        payload = exclude_from_dict(locals(), 'self')
+        payload['reply_to_message'] = self
+        payload['message_thread_id'] = self.thread_id
+
+        return await self.chat.send_location(**payload)
+
+    async def reply_sticker(self,
+                            sticker: Union[Sticker, bytes, str],
+                            emoji: str = None,
                             disable_notification: bool = None,
                             protect_content: bool = None,
                             allow_sending_without_reply: bool = None,
@@ -267,7 +284,7 @@ class Message(MessageModel):
         payload['reply_to_message'] = self
         payload['message_thread_id'] = self.thread_id
 
-        return await self.chat.send_location(**payload)
+        return await self.chat.send_sticker(**payload)
 
     async def forward(self,
                       to_chat: Union['Chat', int, str],
