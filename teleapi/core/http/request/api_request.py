@@ -225,7 +225,7 @@ async def method_request(http_method: str,
                          token: str = None,
                          **kwargs) -> Tuple[aiohttp.ClientResponse, JsonValue]:
     """
-    Send an asynchronous HTTP request for a specific API method. (reduction in interaction with AsyncMethodApiRequest)
+    Send an asynchronous HTTP request for a specific API method. (short alias for AsyncMethodApiRequest)
 
     :param http_method: `str`
         The HTTP method to use for the request (e.g., "GET", "POST", "PUT", etc.).
@@ -260,7 +260,7 @@ async def file_request(http_method: str,
                        token: str = None,
                        **kwargs) -> Tuple[aiohttp.ClientResponse, bytes]:
     """
-    Sends an HTTP request using the Telegram Bot API to interact with files. (reduction in interaction with AsyncFileApiRequest)
+    Sends an HTTP request using the Telegram Bot API to interact with files. (short alias for AsyncFileApiRequest)
 
     :param http_method: `str`
         The HTTP method to be used for the request (e.g., 'GET', 'POST', 'PUT', etc.).

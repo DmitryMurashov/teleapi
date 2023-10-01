@@ -11,6 +11,7 @@ from teleapi.types.user import User
 from .model import StickerSetModel
 from teleapi.core.state import project_settings
 from teleapi.core.exceptions.generics import InvalidParameterError
+from ..sticker import Sticker
 from ...core.utils.files import get_file
 from ...generics.http.methods.utils import make_form_data
 
@@ -167,12 +168,12 @@ class StickerSet(StickerSetModel):
 
         return bool(data["result"])
 
-    async def set_sticker_position(self, sticker_file_id: str, position: int, self_update: bool = False) -> bool:  # TODO: Make classmethod?
+    async def set_sticker_position(self, sticker: Union[str, Sticker], position: int, self_update: bool = False) -> bool:  # TODO: Make classmethod?
         """
         Moves a sticker in a set created by the bot to a specific position.
 
-        :param sticker_file_id: `str`
-            File identifier of the sticker
+        :param sticker: `str`
+            Sticker object or file identifier of the sticker
 
         :param position: `int`
             New sticker position in the set, zero-based
@@ -185,7 +186,7 @@ class StickerSet(StickerSetModel):
         """
 
         response, data = await method_request("POST", APIMethod.SET_STICKER_POSITION_IN_SET, data={
-            "sticker": sticker_file_id,
+            "sticker": sticker.file_id if isinstance(sticker, Sticker) else sticker,
             "position": position
         })
 
@@ -195,11 +196,11 @@ class StickerSet(StickerSetModel):
 
         return bool(data["result"])
 
-    async def delete_sticker(self, sticker_file_id: str, self_update: bool = False) -> bool:  # TODO: Make classmethod?
+    async def delete_sticker(self, sticker: Union[str, Sticker], self_update: bool = False) -> bool:  # TODO: Make classmethod?
         """
         Deletes a sticker from a set created by the bot.
 
-        :param sticker_file_id: `str`
+        :param sticker: `Union[str, Sticker]`
             File identifier of the sticker
 
         :param self_update: `bool`
@@ -210,7 +211,7 @@ class StickerSet(StickerSetModel):
         """
 
         response, data = await method_request("POST", APIMethod.DELETE_STICKER_FROM_SET, data={
-            "sticker": sticker_file_id,
+            "sticker": sticker.file_id if isinstance(sticker, Sticker) else sticker,
         })
 
         if self_update:

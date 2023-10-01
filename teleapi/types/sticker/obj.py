@@ -74,14 +74,10 @@ class Sticker(StickerModel, Filelike):
 
         return FileSerializer().serialize(data=data['result'])
 
-    @staticmethod
-    async def set_emoji_list(sticker_file_id: str, emoji_list: List[str]) -> bool:
+    async def set_emoji_list(self, emoji_list: List[str]) -> bool:
         """
         Changes the list of emoji assigned to a regular or custom emoji sticker.
         The sticker must belong to a sticker set created by the bot.
-
-        :param sticker_file_id: `str`
-            File identifier of the sticker
 
         :param emoji_list: `List[str]`
             1-20 emoji associated with the sticker
@@ -97,20 +93,16 @@ class Sticker(StickerModel, Filelike):
             raise InvalidParameterError("Length of custom_emoji_ids must be from 1 to 20")
 
         response, data = await method_request("POST", APIMethod.SET_STICKER_EMOJI_LIST, data={
-            "sticker": sticker_file_id,
+            "sticker": self.file_id,
             "emoji_list": emoji_list
         })
 
         return bool(data["result"])
 
-    @staticmethod
-    async def set_keywords(sticker_file_id: str, keywords: List[str]) -> bool:
+    async def set_keywords(self, keywords: List[str]) -> bool:
         """
         Changes search keywords assigned to a regular or custom emoji sticker.
         The sticker must belong to a sticker set created by the bot.
-
-        :param sticker_file_id: `str`
-            File identifier of the sticker
 
         :param keywords: `List[str]`
             List of 0-20 search keywords for the sticker with total length of up to 64 characters
@@ -128,20 +120,16 @@ class Sticker(StickerModel, Filelike):
             raise InvalidParameterError("Each keyword of keywords list must be from 1 to 64 characters long")
 
         response, data = await method_request("POST", APIMethod.SET_STICKER_KEYWORDS, data={
-            "sticker": sticker_file_id,
+            "sticker": self.file_id,
             "keywords": keywords
         })
 
         return bool(data["result"])
 
-    @staticmethod
-    async def set_mask_position(sticker_file_id: str, mask_position: MaskPosition) -> bool:
+    async def set_mask_position(self, mask_position: MaskPosition) -> bool:
         """
         Changes the mask position of a mask sticker.
         The sticker must belong to a sticker set that was created by the bot.
-
-        :param sticker_file_id: `str`
-            File identifier of the sticker
 
         :param mask_position: `MaskPosition`
             Object with the position where the mask should be placed on faces.
@@ -152,7 +140,7 @@ class Sticker(StickerModel, Filelike):
         """
 
         response, data = await method_request("POST", APIMethod.SET_STICKER_MASK_POSITION, data={
-            "sticker": sticker_file_id,
+            "sticker": self.file_id,
             "mask_position": MaskPositionSerializer().serialize(obj=mask_position)
         })
 
